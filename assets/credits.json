@@ -1,0 +1,76 @@
+{
+ "mont-qigong": {
+  "freepik_id": 6142745,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "mont-wasser": {
+  "freepik_id": 897379,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "mont-tee": {
+  "freepik_id": 8169740,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "mont-blatt": {
+  "freepik_id": 3540389,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "qigong": {
+  "freepik_id": 5336283,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "ernaehrung": {
+  "freepik_id": 3603635,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "tuina": {
+  "freepik_id": 5578511,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "organetik": {
+  "freepik_id": 1110733,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "programme": {
+  "freepik_id": 7484965,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "kontakt": {
+  "freepik_id": 6535136,
+  "typ": "video",
+  "quelle": "freepik"
+ },
+ "klangschale.jpg": {
+  "freepik_id": 119720866,
+  "typ": "foto",
+  "quelle": "freepik",
+  "personen": false,
+  "ersetzt_am": "2026-09-22",
+  "grund": "Altbild war von Inna gekauft, Kaufbeleg fehlt (Call 17.09.2026)"
+ },
+ "ernaehrung.jpg": {
+  "freepik_id": 54016763,
+  "typ": "foto",
+  "quelle": "freepik",
+  "personen": false,
+  "ersetzt_am": "2026-09-22",
+  "grund": "Altbild war von Inna gekauft, Kaufbeleg fehlt (Call 17.09.2026)"
+ },
+ "wasser.jpg": {
+  "freepik_id": 428580568,
+  "typ": "foto",
+  "quelle": "freepik",
+  "personen": false,
+  "ersetzt_am": "2026-09-22",
+  "grund": "Herkunft des Altbilds unklar"
+ }
+}
