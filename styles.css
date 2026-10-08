@@ -433,6 +433,8 @@ html.kein-js .faq-antwort{grid-template-rows:1fr}
 .formular fieldset.feld legend{padding:0;font:700 13px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--grau);margin-bottom:8px}
 /* Pflichtfeld nicht ausgefüllt: sichtbar an Rahmen UND Meldung, nie nur an Farbe */
 .feld input.fehlt,.feld textarea.fehlt{border-color:#A8321F;box-shadow:0 0 0 4px rgba(168,50,31,.12)}
+.formular .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form-meldung a{color:inherit;text-decoration:underline;font-weight:800}
 .form-meldung{font-size:13.5px;line-height:1.5;margin:0;padding:12px 14px;border-radius:14px;display:flex;gap:10px}
 .form-meldung[hidden]{display:none}
 .form-meldung[data-art="fehler"]{background:rgba(168,50,31,.1);color:#8E2A19;font-weight:600}
@@ -503,18 +505,11 @@ footer .qi-deko{position:absolute;right:-80px;top:-60px;width:380px;opacity:.06;
 .textseite .nachweise li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--erde)}
 .textseite .stand-zeile{margin-top:36px;padding-top:18px;border-top:1px solid var(--linie);font-size:14px;color:var(--grau)}
 
-/* ---------- Cookie */
-/* 🔴 Rechts, nicht links: die Hero-Textspalte liegt auf JEDER Seite links.
-   Bei left:20px verdeckte der Kasten den Fließtext und den CTA-Knopf. */
-.cookie{position:fixed;right:20px;bottom:20px;z-index:80;background:#fff;border-radius:var(--r-s);padding:18px 20px;box-shadow:0 24px 48px -20px rgba(20,35,27,.5);max-width:340px;font-size:13.5px;color:var(--grau);display:grid;gap:12px;border:1px solid var(--linie)}
-.cookie[hidden]{display:none}
 /* Marke „Hauptangebot“ über der H1 der beiden Hauptseiten (Inna, 07.09.2026) */
 .haupt-marke{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:7px 15px;border-radius:999px;
   background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   font:800 13px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff}
 .haupt-marke::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--erde);box-shadow:0 0 0 4px rgba(201,162,77,.3)}
-.cookie .btn{padding:11px 18px;font-size:13px;justify-self:start;min-height:44px}
-.cookie a{color:var(--gruen);font-weight:700}
 
 /* ---------- Responsiv */
 @media (max-width:1100px){
@@ -561,7 +556,6 @@ footer .qi-deko{position:absolute;right:-80px;top:-60px;width:380px;opacity:.06;
   .hero .scroll-hinweis{display:none}
   .info-karte,.formular,.plan{padding:28px 22px}
   .zeitleiste::before{left:71px}.zl{grid-template-columns:56px 32px 1fr}
-  .cookie{left:12px;right:12px;max-width:none}
   .hero h1{font-size:clamp(2.4rem,11vw,3.4rem)}
   .textseite{padding-top:140px}
 }

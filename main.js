@@ -226,65 +226,73 @@ if (matchMedia('(hover:hover)').matches && !ruhig) {
   });
 }
 
-/* ---------- Formulare: öffnen das Mailprogramm mit allem, was eingetragen wurde.
-   Kein Server, kein stiller Verlust — wer nichts abschickt, sieht das in seinem Mailprogramm. */
-document.querySelectorAll('form.formular[data-mail]').forEach(form => {
-  const meldung = document.createElement('p');
-  meldung.className = 'form-meldung'; meldung.hidden = true;
-  meldung.setAttribute('role', 'status'); meldung.setAttribute('aria-live', 'polite');
-  form.appendChild(meldung);
-
-  const zeigen = (text, art) => {
-    meldung.textContent = text;
+/* ---------- Formulare: gehen per POST an den Formular-Dienst (Worker) und kommen als E-Mail bei Inna an.
+   Der Worker leitet danach auf die Seite zurück: ?gesendet=1 (Danke) oder ?fehler=1 (Telefon + Mail statt stillem Verlust). */
+document.querySelectorAll('form.formular[action]').forEach(form => {
+  const meldung = form.querySelector('.form-meldung');
+  const zeigen = (art, inhalt) => {
+    const span = document.createElement('span'); span.append(...inhalt);
+    meldung.replaceChildren(span);
     meldung.dataset.art = art;
     meldung.hidden = false;
   };
+  const text = t => document.createTextNode(t);
+  const link = (href, t) => { const a = document.createElement('a'); a.href = href; a.textContent = t; return a; };
 
   form.addEventListener('submit', e => {
-    e.preventDefault();
-
     /* Pflichtfelder selbst prüfen, damit die Meldung im Stil der Seite steht */
     const fehlend = [...form.querySelectorAll('[required]')].filter(f => !f.value.trim() ||
       (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.value.trim())));
     form.querySelectorAll('.fehlt').forEach(f => f.classList.remove('fehlt'));
     if (fehlend.length) {
+      e.preventDefault();
       fehlend.forEach(f => f.classList.add('fehlt'));
-      zeigen(fehlend.length === 1
-        ? 'Da fehlt noch etwas: ' + (fehlend[0].name || 'ein Feld') + '.'
-        : 'Bitte fülle noch aus: ' + fehlend.map(f => f.name).join(', ') + '.', 'fehler');
+      const namen = fehlend.map(f => f.labels && f.labels[0] ? f.labels[0].textContent : 'ein Feld');
+      zeigen('fehler', [text(fehlend.length === 1 ? 'Da fehlt noch etwas: ' + namen[0] + '.' : 'Bitte fülle noch aus: ' + namen.join(', ') + '.')]);
       fehlend[0].focus();
       return;
     }
-
-    const zeilen = [];
-    form.querySelectorAll('input[name], textarea[name]').forEach(f => {
-      if (f.type === 'checkbox') return;
-      if (f.value.trim()) zeilen.push(f.name + ': ' + f.value.trim());
-    });
-    form.querySelectorAll('.anliegen[data-gruppe]').forEach(g => {
-      const an = [...g.querySelectorAll('input:checked')].map(i => i.value);
-      if (an.length) zeilen.push(g.dataset.gruppe + ': ' + an.join(', '));
-    });
-
-    const adresse = 'mailto:' + form.dataset.mail
-      + '?subject=' + encodeURIComponent(form.dataset.betreff)
-      + '&body=' + encodeURIComponent(zeilen.join('\n') + '\n\n— gesendet über mehrlebensenergie-praxis.de');
-    location.href = adresse;
-    zeigen('Dein E-Mail-Programm öffnet sich mit der fertigen Nachricht. Öffnet sich nichts, schreib direkt an '
-      + form.dataset.mail + ' oder ruf an.', 'ok');
+    const knopf = form.querySelector('button[type=submit]');
+    if (knopf) { knopf.disabled = true; knopf.style.opacity = '.6'; }
   });
+
+  /* Rückmeldung des Formular-Dienstes (Rücksprung mit Parameter) */
+  const q = new URLSearchParams(location.search);
+  const hier = form.id === 'anfrage' ? 'anfrage' : 'warteliste';
+  const ziel = location.hash === '#' + (form.id === 'anfrage' ? 'anfrage' : 'warteliste');
+  if (ziel && (q.has('gesendet') || q.has('fehler'))) {
+    if (q.has('gesendet')) {
+      zeigen('ok', [text(hier === 'anfrage'
+        ? 'Danke, deine Nachricht ist angekommen. Inna meldet sich persönlich bei dir.'
+        : 'Danke, du bist auf der Warteliste. Du hörst von Inna, sobald das erste Programm startet.')]);
+      form.reset();
+    } else {
+      zeigen('fehler', [text('Das hat leider nicht geklappt. Ruf bitte an unter '), link(form.dataset.telLink, form.dataset.tel),
+        text(' oder schreib direkt an '), link('mailto:' + form.dataset.mail, form.dataset.mail), text('.')]);
+    }
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
 
   /* Die rote Markierung verschwindet, sobald getippt wird */
   form.addEventListener('input', e => e.target.classList?.remove('fehlt'));
 });
 
-/* ---------- Cookie-Hinweis */
-const cookie = document.querySelector('.cookie');
-if (cookie) {
-  let ok = false; try { ok = !!localStorage.getItem('ille-cookie'); } catch (e) {}
-  if (!ok) cookie.hidden = false;
-  cookie.querySelector('.btn')?.addEventListener('click', () => { cookie.hidden = true; try { localStorage.setItem('ille-cookie', '1'); } catch (e) {} });
-}
+/* ---------- Seitenaufrufe zählen — ohne Cookies, ohne Speicher im Browser, ohne IP und ohne Kennung.
+   Eigener Zähler der HandwerksManufaktur (Worker seiten-zaehler); gezählt wird nur: Seite, Zeitpunkt, Herkunfts-Website,
+   Handy/Computer, Land. Beschrieben in der Datenschutzerklärung. */
+(() => {
+  if (!/(^|\.)mehrlebensenergie-praxis\.de$/.test(location.hostname)) return;
+  let r = 'direkt';
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.get('utm_source')) r = 'utm:' + q.get('utm_source');
+    else if (document.referrer) { const h = new URL(document.referrer).hostname.replace(/^www\./, ''); if (h && h !== location.hostname) r = h; }
+  } catch (e) {}
+  const d = JSON.stringify({ t: 'v', s: location.hostname, p: location.pathname, g: innerWidth < 768 ? 'm' : 'd',
+    id: Math.random().toString(36).slice(2, 12), r });
+  const Z = 'https://seiten-zaehler.handwerksmanufaktur.workers.dev/z';
+  try { if (!(navigator.sendBeacon && navigator.sendBeacon(Z, new Blob([d], { type: 'text/plain' })))) fetch(Z, { method: 'POST', body: d, keepalive: true, mode: 'no-cors' }); } catch (e) {}
+})();
 
 /* ---------- Start */
 const geladen = () => { document.body.classList.add('geladen'); meridianBauen(); scrub(); };
