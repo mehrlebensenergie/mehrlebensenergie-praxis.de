@@ -299,3 +299,7 @@ const geladen = () => { document.body.classList.add('geladen'); meridianBauen();
 if (document.readyState === 'complete') geladen(); else addEventListener('load', geladen);
 addEventListener('resize', () => { meridianMessen(); scrub(); });
 setTimeout(meridianMessen, 1500); setTimeout(meridianMessen, 4000);
+
+/* Spam-Schutz ohne Cookie (21.10.2026): Ladezeit ins Formular. Der Formular-Dienst verwirft Absendungen
+   unter 3 s und solche mit leerem Feld (Bots ohne JavaScript). */
+document.querySelectorAll('form input[name="ts"]').forEach(function (f) { f.value = String(Date.now()); });
