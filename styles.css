@@ -644,3 +644,5 @@ body.menu-offen .menu-flaeche li a:active{opacity:.6}
 .zahl{transition:color .4s var(--ease)}
 .zahl-k:hover .zahl{color:var(--erde)}
 @media (prefers-reduced-motion:reduce){.schritt:hover,.zahl-k:hover{transform:none}}
+@media (max-width:380px){.topbar{letter-spacing:.01em}.topbar .rechts{gap:10px}.topbar a{gap:5px}}
+@media (max-width:340px){.topbar .rechts a[href^="mailto:"]{display:none}}
